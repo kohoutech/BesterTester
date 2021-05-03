@@ -19,36 +19,29 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 
 namespace PasteUp
 {
-    public partial class PasteWindow : Form
+
+    class PasteBox
     {
-        PasteCanvas canvas;
+        RectangleF rect;
+        Color color;
 
-        public PasteWindow()
+        public PasteBox()
         {
-            InitializeComponent();
-
-            canvas = new PasteCanvas();
-            canvas.Location = new Point(this.ClientRectangle.Left, this.ClientRectangle.Top);
-            canvas.Size = new Size(this.ClientRectangle.Width, this.ClientRectangle.Height);
-            this.Controls.Add(canvas);
+            rect = new RectangleF(30, 30, 100, 100);
+            color = Color.FromArgb(255, 128, 64);
         }
 
-        protected override void OnResize(EventArgs e)
+        public virtual void paint(Graphics g)
         {
-            base.OnResize(e);
-            if (canvas != null)
-            {
-                canvas.Size = new Size(this.ClientRectangle.Width, this.ClientRectangle.Height);
-            }
+            Brush brush = new SolidBrush(color);
+            g.FillRectangle(brush, rect);
+
         }
     }
 }

@@ -44,6 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PasteCanvas.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PasteBox.cs" />
+    <Compile Include="PasteImage.cs" />
     <Compile Include="PasteWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -52,6 +57,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PasteText.cs" />
     <EmbeddedResource Include="PasteWindow.resx">
       <DependentUpon>PasteWindow.cs</DependentUpon>
     </EmbeddedResource>
