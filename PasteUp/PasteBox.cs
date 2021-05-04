@@ -19,28 +19,40 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace PasteUp
 {
-
     class PasteBox
     {
-        RectangleF rect;
-        Color color;
+        public RectangleF rect;
+        public Color color;
+        public Color bordercolor;
+        public bool isSelected;
 
         public PasteBox()
         {
             rect = new RectangleF(30, 30, 100, 100);
             color = Color.FromArgb(255, 128, 64);
+            bordercolor = Color.Black;
+            isSelected = false;
         }
 
         public virtual void paint(Graphics g)
         {
+            if (isSelected)
+            {
+                Pen pen = new Pen(bordercolor);
+                pen.Width = 5;
+                g.DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
+            }
+
             Brush brush = new SolidBrush(color);
             g.FillRectangle(brush, rect);
+
 
         }
     }

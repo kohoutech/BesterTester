@@ -31,6 +31,7 @@ namespace PasteUp
     {
 
         public LinkedList<PasteBox> boxes;
+        public PasteBox selectedbox;
 
         public PasteCanvas()
         {
@@ -40,31 +41,53 @@ namespace PasteUp
             boxes = new LinkedList<PasteBox>();
             PasteBox box = new PasteBox();
             boxes.AddLast(box);
+            selectedbox = null;
         }
 
         //- mouse handling ------------------------------------------------------------
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            base.OnMouseDown(e);
+            bool handled = false;
+            foreach (PasteBox box in boxes)
+            {
+                if (box.rect.Contains(e.Location))
+                {
+                    selectedbox = box;
+                    box.isSelected = true;
+                    handled = true;
+                    break;
+                }
+            }
 
+            //we clicked on a blank area of the canvas - deselect current selection if there is one
+            if (!handled)
+            {
+                if (selectedbox != null)
+                    selectedbox.isSelected = false;
+                selectedbox = null;
+            }
+            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-
+            base.OnMouseMove(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            base.OnMouseUp(e);
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
-        {
-        }
+        //protected override void OnMouseClick(MouseEventArgs e)
+        //{
+        //}
 
-        protected override void OnMouseDoubleClick(MouseEventArgs e)
-        {
-        }
+        //protected override void OnMouseDoubleClick(MouseEventArgs e)
+        //{
+        //}
 
         //- keyboard handling ---------------------------------------------------------
 

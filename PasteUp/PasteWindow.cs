@@ -39,16 +39,16 @@ namespace PasteUp
             canvas = new PasteCanvas();
             canvas.Location = new Point(this.ClientRectangle.Left, this.ClientRectangle.Top);
             canvas.Size = new Size(this.ClientRectangle.Width, this.ClientRectangle.Height);
-            this.Controls.Add(canvas);
+            PastePanel.Controls.Add(canvas);
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (canvas != null)
-            {
-                canvas.Size = new Size(this.ClientRectangle.Width, this.ClientRectangle.Height);
-            }
+            //if (canvas != null)
+            //{
+            //    canvas.Size = new Size(this.ClientRectangle.Width, this.ClientRectangle.Height);
+            //}
         }
     }
 }
