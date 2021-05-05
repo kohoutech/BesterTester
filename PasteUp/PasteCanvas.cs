@@ -41,6 +41,10 @@ namespace PasteUp
             boxes = new LinkedList<PasteBox>();
             PasteBox box = new PasteBox();
             boxes.AddLast(box);
+            PasteBox box2 = new PasteBox();
+            box2.bounds = new RectangleF(2, 2, 50, 50);
+            box2.color = Color.DarkGreen;
+            boxes.AddLast(box2);
             selectedbox = null;
         }
 
@@ -52,7 +56,7 @@ namespace PasteUp
             bool handled = false;
             foreach (PasteBox box in boxes)
             {
-                if (box.rect.Contains(e.Location))
+                if (box.bounds.Contains(e.Location))
                 {
                     selectedbox = box;
                     box.isSelected = true;

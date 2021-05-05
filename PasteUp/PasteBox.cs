@@ -28,14 +28,14 @@ namespace PasteUp
 {
     class PasteBox
     {
-        public RectangleF rect;
+        public RectangleF bounds;
         public Color color;
         public Color bordercolor;
         public bool isSelected;
 
         public PasteBox()
         {
-            rect = new RectangleF(30, 30, 100, 100);
+            bounds = new RectangleF(548, 348, 50, 50);
             color = Color.FromArgb(255, 128, 64);
             bordercolor = Color.Black;
             isSelected = false;
@@ -47,11 +47,11 @@ namespace PasteUp
             {
                 Pen pen = new Pen(bordercolor);
                 pen.Width = 5;
-                g.DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
+                g.DrawRectangle(pen, bounds.X, bounds.Y, bounds.Width, bounds.Height);
             }
 
             Brush brush = new SolidBrush(color);
-            g.FillRectangle(brush, rect);
+            g.FillRectangle(brush, bounds);
 
 
         }

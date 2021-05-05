@@ -49,6 +49,9 @@
     </Compile>
     <Compile Include="PasteBox.cs" />
     <Compile Include="PasteImage.cs" />
+    <Compile Include="PastePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PasteWindow.cs">
       <SubType>Form</SubType>
     </Compile>
