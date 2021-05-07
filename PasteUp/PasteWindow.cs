@@ -30,10 +30,36 @@ namespace PasteUp
 {
     public partial class PasteWindow : Form
     {
+        PasteCanvas canvas;
 
         public PasteWindow()
         {
             InitializeComponent();
+            canvas = PastePanel.canvas;
+        }
+
+        //- menu handlers -----------------------------------------------------
+
+        private void exitFileMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void insertTextPageMenuItem_Click(object sender, EventArgs e)
+        {
+            canvas.InsertPasteText();
+        }
+
+        private void insertImagePageMenuItem_Click(object sender, EventArgs e)
+        {
+            canvas.InsertPasteImage();
+        }
+
+        private void aboutHelpMenuItem_Click(object sender, EventArgs e)
+        {
+            String msg = "Paste Up\nversion 0.1.0\n\xA9 Topographics Software 2005-2021\n" + "http://topographics.kohoutech.com";
+            MessageBox.Show(msg, "About");
+
         }
     }
 }

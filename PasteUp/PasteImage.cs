@@ -28,6 +28,11 @@ namespace PasteUp
 {
     class PasteImage : PasteBox
     {
+        public PasteImage() : base()
+        {
+            color = Color.FromArgb(0, 255, 0);
+        }
+
         public override void paint(Graphics g)
         {
             base.paint(g);

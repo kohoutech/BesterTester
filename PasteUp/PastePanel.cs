@@ -32,7 +32,7 @@ namespace PasteUp
         //compensate for the fact that if the scrollbar max = 50, the greatest value will be 50 - THUMBWIDTH (value determined experimentally)
         const int THUMBWIDTH = 9;
 
-        PasteCanvas canvas;
+        public PasteCanvas canvas;
 
         HScrollBar hscroll;
         VScrollBar vscroll;

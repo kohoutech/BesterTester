@@ -35,8 +35,8 @@ namespace PasteUp
 
         public PasteBox()
         {
-            bounds = new RectangleF(548, 348, 50, 50);
-            color = Color.FromArgb(255, 128, 64);
+            bounds = new RectangleF(0, 0, 50, 50);
+            color = Color.FromArgb(255, 255, 255);
             bordercolor = Color.Black;
             isSelected = false;
         }

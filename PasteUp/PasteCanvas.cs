@@ -31,21 +31,31 @@ namespace PasteUp
     {
 
         public LinkedList<PasteBox> boxes;
-        public PasteBox selectedbox;
+        public PasteBox selectedBox;
 
         public PasteCanvas()
         {
-            this.BackColor = Color.DodgerBlue;
+            this.BackColor = Color.Wheat;
             this.DoubleBuffered = true;
 
             boxes = new LinkedList<PasteBox>();
-            PasteBox box = new PasteBox();
+            selectedBox = null;
+        }
+
+        internal void InsertPasteText()
+        {
+            PasteText box = new PasteText();
+            box.bounds = new RectangleF(2, 2, 50, 50);
             boxes.AddLast(box);
-            PasteBox box2 = new PasteBox();
-            box2.bounds = new RectangleF(2, 2, 50, 50);
-            box2.color = Color.DarkGreen;
-            boxes.AddLast(box2);
-            selectedbox = null;
+            Invalidate();
+        }
+
+        internal void InsertPasteImage()
+        {
+            PasteImage box = new PasteImage();
+            box.bounds = new RectangleF(548, 348, 50, 50);
+            boxes.AddLast(box);
+            Invalidate();
         }
 
         //- mouse handling ------------------------------------------------------------
@@ -58,8 +68,12 @@ namespace PasteUp
             {
                 if (box.bounds.Contains(e.Location))
                 {
-                    selectedbox = box;
-                    box.isSelected = true;
+                    if (selectedBox != null)
+                    {
+                        selectedBox.isSelected = false;
+                    }
+                    selectedBox = box;
+                    selectedBox.isSelected = true;
                     handled = true;
                     break;
                 }
@@ -68,9 +82,9 @@ namespace PasteUp
             //we clicked on a blank area of the canvas - deselect current selection if there is one
             if (!handled)
             {
-                if (selectedbox != null)
-                    selectedbox.isSelected = false;
-                selectedbox = null;
+                if (selectedBox != null)
+                    selectedBox.isSelected = false;
+                selectedBox = null;
             }
             Invalidate();
         }
@@ -97,6 +111,15 @@ namespace PasteUp
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (selectedBox != null)
+                {
+                    boxes.Remove(selectedBox);
+                    selectedBox = null;
+                    Invalidate();
+                }
+            }
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
