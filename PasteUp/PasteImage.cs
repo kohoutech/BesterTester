@@ -28,7 +28,7 @@ namespace PasteUp
 {
     class PasteImage : PasteBox
     {
-        public PasteImage() : base()
+        public PasteImage(float x, float y, float width, float height) : base(x, y, width, height)
         {
             color = Color.FromArgb(0, 255, 0);
         }

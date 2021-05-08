@@ -33,6 +33,14 @@ namespace PasteUp
         public LinkedList<PasteBox> boxes;
         public PasteBox selectedBox;
 
+        bool dragging;
+        Point dragOrg;
+        Point dragOfs;
+
+        bool resizing;
+        Point resizeOrg;
+        Point resizeOfs;
+
         public PasteCanvas()
         {
             this.BackColor = Color.Wheat;
@@ -40,22 +48,45 @@ namespace PasteUp
 
             boxes = new LinkedList<PasteBox>();
             selectedBox = null;
+
+            dragging = false;
+            resizing = false;
         }
 
-        internal void InsertPasteText()
+        //- management ---------------------------------------------------------
+
+        public void InsertPasteText()
         {
-            PasteText box = new PasteText();
-            box.bounds = new RectangleF(2, 2, 50, 50);
+            PasteText box = new PasteText(2, 2, 50, 50);
             boxes.AddLast(box);
             Invalidate();
         }
 
-        internal void InsertPasteImage()
+        public void InsertPasteImage()
         {
-            PasteImage box = new PasteImage();
-            box.bounds = new RectangleF(548, 348, 50, 50);
+            PasteImage box = new PasteImage(548, 348, 50, 50);
             boxes.AddLast(box);
             Invalidate();
+        }
+
+        public void selectPasteBox(PasteBox box)
+        {
+            if (selectedBox != null)
+            {
+                selectedBox.select(false);
+            }
+            selectedBox = box;
+            selectedBox.select(true);
+        }
+
+        public void deletePasteBox()
+        {
+            if (selectedBox != null)
+            {
+                boxes.Remove(selectedBox);
+                selectedBox = null;
+                Invalidate();
+            }
         }
 
         //- mouse handling ------------------------------------------------------------
@@ -66,17 +97,22 @@ namespace PasteUp
             bool handled = false;
             foreach (PasteBox box in boxes)
             {
-                if (box.bounds.Contains(e.Location))
+                if (box.hitTest(e.Location))
                 {
-                    if (selectedBox != null)
-                    {
-                        selectedBox.isSelected = false;
-                    }
-                    selectedBox = box;
-                    selectedBox.isSelected = true;
+                    selectPasteBox(box);
+                    startDrag(e.Location);
                     handled = true;
                     break;
                 }
+
+                //ResizeDirection resizeDir = box.borderHitTest(e.Location);
+                //if (resizeDir != ResizeDirection.NONE)
+                //{
+                //    selectPasteBox(box);
+                //    startResize(e.Location, resizeDir);
+                //    handled = true;
+                //    break;
+                //}
             }
 
             //we clicked on a blank area of the canvas - deselect current selection if there is one
@@ -85,18 +121,36 @@ namespace PasteUp
                 if (selectedBox != null)
                     selectedBox.isSelected = false;
                 selectedBox = null;
+                handled = true;
             }
-            Invalidate();
+
+            if (handled)
+            {
+                Invalidate();
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            if (dragging)
+            {
+                drag(e.Location);
+            }
+
+            if (resizing)
+            {
+                resize(e.Location);
+            }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+            if (dragging)
+            {
+                endDrag(e.Location);
+            }
         }
 
         //protected override void OnMouseClick(MouseEventArgs e)
@@ -113,12 +167,7 @@ namespace PasteUp
         {
             if (e.KeyCode == Keys.Delete)
             {
-                if (selectedBox != null)
-                {
-                    boxes.Remove(selectedBox);
-                    selectedBox = null;
-                    Invalidate();
-                }
+                deletePasteBox();
             }
         }
 
@@ -126,8 +175,51 @@ namespace PasteUp
         {
         }
 
-        //- painting ------------------------------------------------------------------
+        //- dragging ------------------------------------------------------------------
 
+        //track diff between pos when mouse button was pressed and where it is now, and move box by the same offset
+        private void startDrag(Point p)
+        {
+            dragging = true;
+            dragOrg = selectedBox.getPos();
+            dragOfs = p;
+        }
+
+        private void drag(Point p)
+        {
+            int newX = p.X - dragOfs.X;
+            int newY = p.Y - dragOfs.Y;
+            selectedBox.setPos(new Point(dragOrg.X + newX, dragOrg.Y + newY));
+            Invalidate();
+        }
+
+        //we've finished a drag, let the model know what has moved and where it is now
+        private void endDrag(Point p)
+        {
+            //Point pos = selectedBox.getPos();
+            //selectedBox.model.setPos(pos.X, pos.Y);
+            //patchModel.layoutHasChanged();
+            dragging = false;
+        }
+
+        //- resizing ------------------------------------------------------------------
+
+        public void startResize(Point location, ResizeDirection resizedir)
+        {
+            resizing = true;
+        }
+
+        public void resize(Point p)
+        {
+
+        }
+
+        public void endResize(Point p)
+        {
+            resizing = false;
+        }
+
+        //- painting ------------------------------------------------------------------
 
         protected override void OnPaint(PaintEventArgs e)
         {
