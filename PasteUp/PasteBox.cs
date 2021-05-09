@@ -57,14 +57,14 @@ namespace PasteUp
         {
             ResizeDirection result = ResizeDirection.NONE;
 
-            if ((((bounds.Left - p.X) < BORDERWIDTH) && ((bounds.Left - p.X) >= 0)) ||
-                 (((p.X - bounds.Right) < BORDERWIDTH) && ((p.X - bounds.Right) >= 0)))
+            float rdelta = p.X - bounds.Right;
+            float bdelta = p.Y - bounds.Bottom;
+            if (0 <= rdelta && rdelta < BORDERWIDTH)
             {
                 result = ResizeDirection.HORZ;
             }
 
-            if ((((bounds.Top - p.Y) < BORDERWIDTH) && ((bounds.Top - p.Y) >= 0)) ||
-                 (((p.Y - bounds.Bottom) < BORDERWIDTH) && ((p.X - bounds.Bottom) >= 0)))
+            if (0 <= bdelta && bdelta < BORDERWIDTH)
             {
                 result = (result == ResizeDirection.HORZ) ? ResizeDirection.BOTH : ResizeDirection.VERT;
             }
@@ -72,7 +72,7 @@ namespace PasteUp
             return result;
         }
 
-        //- moving & sizing ---------------------------------------------------
+        //- positioning ---------------------------------------------------
 
         public void select(bool _isSelected)
         {
@@ -87,12 +87,30 @@ namespace PasteUp
 
         public void setPos(Point pos)
         {
-            //Point here = getPos();
-            //int xofs = pos.X - here.X;
-            //int yofs = pos.Y - here.Y;
-            //bounds.Offset(xofs, yofs);
             bounds.X = pos.X;
             bounds.Y = pos.Y;
+        }
+
+        public int getHeight()
+        {
+            return (int)bounds.Height;
+        }
+
+        public void setHeight(int height)
+        {
+            height = (height > 0) ? height : 1;
+            bounds.Height = height;
+        }
+
+        public int getWidth()
+        {
+            return (int)bounds.Width;
+        }
+
+        public void setWidth(int width)
+        {
+            width = (width > 0) ? width : 1;
+            bounds.Width = width;
         }
 
         //- painting ----------------------------------------------------------

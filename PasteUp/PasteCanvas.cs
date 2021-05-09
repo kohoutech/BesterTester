@@ -38,8 +38,11 @@ namespace PasteUp
         Point dragOfs;
 
         bool resizing;
-        Point resizeOrg;
+        ResizeDirection resizeDir;
         Point resizeOfs;
+        int resizeHeight;
+        int resizeWidth;
+        Cursor prevCursor;
 
         public PasteCanvas()
         {
@@ -105,14 +108,14 @@ namespace PasteUp
                     break;
                 }
 
-                //ResizeDirection resizeDir = box.borderHitTest(e.Location);
-                //if (resizeDir != ResizeDirection.NONE)
-                //{
-                //    selectPasteBox(box);
-                //    startResize(e.Location, resizeDir);
-                //    handled = true;
-                //    break;
-                //}
+                ResizeDirection resizeDir = box.borderHitTest(e.Location);
+                if (resizeDir != ResizeDirection.NONE)
+                {
+                    selectPasteBox(box);
+                    startResize(e.Location, resizeDir);
+                    handled = true;
+                    break;
+                }
             }
 
             //we clicked on a blank area of the canvas - deselect current selection if there is one
@@ -151,6 +154,11 @@ namespace PasteUp
             {
                 endDrag(e.Location);
             }
+
+            if (resizing)
+            {
+                endResize(e.Location);
+            }
         }
 
         //protected override void OnMouseClick(MouseEventArgs e)
@@ -181,6 +189,8 @@ namespace PasteUp
         private void startDrag(Point p)
         {
             dragging = true;
+            prevCursor = this.Cursor;
+            this.Cursor = Cursors.SizeAll;
             dragOrg = selectedBox.getPos();
             dragOfs = p;
         }
@@ -196,27 +206,47 @@ namespace PasteUp
         //we've finished a drag, let the model know what has moved and where it is now
         private void endDrag(Point p)
         {
-            //Point pos = selectedBox.getPos();
-            //selectedBox.model.setPos(pos.X, pos.Y);
-            //patchModel.layoutHasChanged();
             dragging = false;
+            this.Cursor = prevCursor;
         }
 
         //- resizing ------------------------------------------------------------------
 
-        public void startResize(Point location, ResizeDirection resizedir)
+        public void startResize(Point p, ResizeDirection _resizedir)
         {
             resizing = true;
+            prevCursor = this.Cursor;
+            resizeDir = _resizedir;
+            switch (resizeDir)
+            {
+                case ResizeDirection.HORZ: this.Cursor = Cursors.SizeWE; break;
+                case ResizeDirection.VERT: this.Cursor = Cursors.SizeNS; break;
+                case ResizeDirection.BOTH: this.Cursor = Cursors.SizeNWSE; break;
+            }
+            resizeHeight = selectedBox.getHeight();
+            resizeWidth = selectedBox.getWidth();
+            resizeOfs = p;
         }
 
         public void resize(Point p)
         {
-
+            int newX = p.X - resizeOfs.X;
+            int newY = p.Y - resizeOfs.Y;
+            if ((resizeDir == ResizeDirection.HORZ) || (resizeDir == ResizeDirection.BOTH))
+            {
+                selectedBox.setWidth(newX + resizeWidth);
+            }
+            if ((resizeDir == ResizeDirection.VERT) || (resizeDir == ResizeDirection.BOTH))
+            {
+                selectedBox.setHeight(newY + resizeHeight);
+            }
+            Invalidate();
         }
 
         public void endResize(Point p)
         {
             resizing = false;
+            this.Cursor = prevCursor;
         }
 
         //- painting ------------------------------------------------------------------
@@ -233,7 +263,5 @@ namespace PasteUp
                 box.paint(g);
             }
         }
-
-
     }
 }
